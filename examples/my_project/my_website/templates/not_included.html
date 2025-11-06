@@ -1,0 +1,21 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block title %}Non-Internationalized Page{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumbs">
+        <li>
+            <a href="{% url 'landing' %}">Home</a>
+        </li>
+        <li>
+            Not Included
+        </li>
+    </ul>
+    <h1>Not Included Page</h1>
+    <p>
+        This page is only included when running the django site as a normal wsgi dynamic site
+        (or via `manage.py runserver`). It will NOT be included in the static site that's built
+        because its view is not wrapped with the <code>@include_in_ssg</code> decorator.
+    </p>
+{% endblock %}

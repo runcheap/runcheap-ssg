@@ -1,0 +1,141 @@
+{% load static %}
+{% load i18n %}
+{% load runcheap_ssg %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+    <head>
+        {# Metadata #}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %}</title>
+
+        {# Canonical and alternate translation urls #}
+        <link rel="canonical" href="{{ BASE_URL }}{{ request.path|runcheap_ssg_language_url:LANGUAGE_CODE }}">
+        {% for alt_lang in request.path|runcheap_ssg_alt_languages %}
+            <link rel="alternate" hreflang="{{ alt_lang }}" href="{{ BASE_URL }}{{ request.path|runcheap_ssg_language_url:alt_lang }}">
+        {% endfor %}
+        <script>
+            // redirect the user to their preferred language
+            (() => {
+                const cookieParam = document.cookie.split("; ").find((c) => c.startsWith("{{ LANGUAGE_COOKIE_NAME|escapejs }}="));
+                if (cookieParam) {
+                    const langLink = document.querySelector("link[hreflang='" + cookieParam.split("=")[1] + "']");
+                    if (langLink) {
+                        window.location.href = langLink.href;
+                    }
+                }
+            })();
+        </script>
+
+        {# CSS/JS resources #}
+        <link href="{% static 'mywebsite.css' %}" rel="stylesheet">
+        <script src="{% static 'mywebsite.js' %}"></script>
+    </head>
+    <body>
+
+        {# Nav #}
+        <div class="navbar-wrapper">
+            <nav class="navbar bg-secondary-subtle">
+                <div class="navlogo flex-center u-none">{% translate "My Website" %}</div>
+                <input id="nav1" class="collapse-toggle" type="checkbox" aria-controls="nav1wrapper" aria-hidden="true">
+                <label for="nav1" class="collapse-toggler flex-center" tabindex=0 role="button" title="Menu" aria-expanded="false">
+                    <div class="navmenu">☰</div>
+                </label>
+                <div id="nav1wrapper" class="collapse-wrapper collapse-transition">
+                    <div class="collapse-content">
+                        <div class="flex-center">
+                            <a class="navitem" href="{% url 'landing' %}">{% translate "Home" %}</a>
+                            <a class="navitem" href="{% url 'about' %}">{% translate "About" %}</a>
+                            <div class="flex-auto"></div>
+                            {% if request.path|runcheap_ssg_alt_languages %}
+                                <div class="navitem lang-selector">
+                                    <details class="dropdown">
+                                        <summary title="{% translate 'Language selection' %}">{{ LANGUAGE_CODE }}</summary>
+                                        <ul class="dropdown-content dropdown-end">
+                                            {% for lang_code, lang_name in LANGUAGES %}
+                                                {% with lang_url=request.path|runcheap_ssg_language_url:lang_code %}
+                                                    <li class="dropdown-item"><a href="{{ lang_url }}" class="lang-link" data-lang="{{ lang_code }}">{{ lang_name }} ({{ lang_code }})</a></li>
+                                                {% endwith %}
+                                            {% endfor %}
+                                        </ul>
+                                    </details>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        {# Content #}
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        {# Footer #}
+        <footer>
+            <p>
+                {% blocktranslate trimmed %}
+                    This is an example for
+                    <a href="https://github.com/runcheap/runcheap-ssg">Run Cheap Static Site Generator</a>
+                    (<code>runcheap-ssg</code>).
+                    Released under MIT License.
+                {% endblocktranslate %}
+            </p>
+        </footer>
+
+        {# Javascript #}
+        {% translate "[clear]" as reset_lang %}
+        <script>
+
+            // language handling
+            (() => {
+                // default cookie parameters
+                let cookieParams = "; Path={{ LANGUAGE_COOKIE_PATH|escapejs }}";
+                {% if LANGUAGE_COOKIE_SAMESITE %}
+                    cookieParams += "; SameSite={{ LANGUAGE_COOKIE_SAMESITE|escapejs }}";
+                {% endif %}
+                {% if LANGUAGE_COOKIE_SECURE %}
+                    cookieParams += "; Secure";
+                {% endif %}
+                {% if LANGUAGE_COOKIE_DOMAIN %}
+                    cookieParams += "; Domain={{ LANGUAGE_COOKIE_DOMAIN|escapejs }}";
+                {% endif %}
+
+                // add language preference reset option to language selector
+                const cookiePref = document.cookie.split("; ").find((c) => c.startsWith("{{ LANGUAGE_COOKIE_NAME|escapejs }}="));
+                if (cookiePref) {
+                    const langPref = cookiePref.split("=")[1];
+                    document.querySelectorAll(".lang-link[data-lang='" + langPref + "']").forEach((a) => {
+                        a.parentNode.classList.add("active");
+                        const resetLink = document.createElement("a");
+                        resetLink.classList.add("lang-reset");
+                        resetLink.href = "#language-reset";
+                        resetLink.textContent = "{{ reset_lang|escapejs }}";
+                        resetLink.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            document.cookie = "{{ LANGUAGE_COOKIE_NAME|escapejs }}=" + document.querySelector("html").lang + cookieParams + "; Max-Age=0";
+                            document.location.href = document.location.href;
+                        });
+                        console.log("resetLink", resetLink);
+                        a.parentNode.appendChild(resetLink);
+                    });
+                }
+
+                // add click events that save the language preference
+                document.querySelectorAll(".lang-link").forEach((a) => {
+                    a.addEventListener("click", (e) => {
+                        let langCookie = "{{ LANGUAGE_COOKIE_NAME|escapejs }}=" + e.currentTarget.getAttribute("data-lang") + cookieParams;
+                        {% if LANGUAGE_COOKIE_AGE %}
+                            langCookie += "; Max-Age={{ LANGUAGE_COOKIE_AGE|escapejs }}";
+                        {% endif %}
+                        document.cookie = langCookie;
+                    });
+                });
+            })();
+
+        </script>
+    </body>
+</html>

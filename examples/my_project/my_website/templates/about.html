@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "About Page" %}{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumbs">
+        <li>
+            <a href="{% url 'landing' %}">{% translate "Home" %}</a>
+        </li>
+        <li>
+            {% translate "About" %}
+        </li>
+    </ul>
+    <h1>
+        {% translate "About" %}
+    </h1>
+    <p>
+        {% blocktranslate trimmed %}
+            This is an example website that has been statically generated
+            using <a href="https://github.com/runcheap/runcheap-ssg">Run Cheap SSG</a>.
+            It has examples for how to generate a static site in multiple languages
+            and with many sub pages.
+        {% endblocktranslate %}
+    </p>
+{% endblock %}

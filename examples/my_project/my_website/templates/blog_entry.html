@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+{% load i18n %}
+
+{% block title %}{{ entry.title }} - {% translate "Blog" %}{% endblock %}
+
+{% block content %}
+    <ul class="breadcrumbs">
+        <li>
+            <a href="{% url 'landing' %}">{% translate "Home" %}</a>
+        </li>
+        <li>
+            {% translate "Blog Entry:" %}
+            {{ entry.title }}
+        </li>
+    </ul>
+    <h1>
+        {{ entry.title }}
+    </h1>
+    <p>
+        {{ entry.content }}
+    </p>
+{% endblock %}

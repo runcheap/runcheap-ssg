@@ -1,0 +1,20 @@
+{# Since static sites may not have the ability to configure 302 Redirect responses, this is an html equivalent #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">{# disable favicon request #}
+        <meta http-equiv="refresh" content="0; url={{ redirect_url }}">
+        <style>{{ redirect_style }}</style>
+    </head>
+    <body>
+        <noscript>
+            {{ redirect_noscript }}
+            <a href="{{ redirect_url }}">{{ redirect_url }}</a>
+        </noscript>
+        <script>
+            document.write("{{ redirect_message|escapejs }}");
+            window.location.href = "{{ redirect_url|escapejs }}";
+        </script>
+    </body>
+</html>

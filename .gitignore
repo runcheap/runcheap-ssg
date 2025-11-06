@@ -1,0 +1,8 @@
+# prevent python bytecode files
+__pycache__/
+*.py[codz]
+*.so
+*.egg-info/
+
+# prevent SSG build folders
+_build/
