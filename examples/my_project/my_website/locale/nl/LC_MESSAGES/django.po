@@ -1,14 +1,14 @@
 # Run Cheap Static Site Generator (Dutch Translation).
-# Copyright (C) 2025 Daniel Roesler
+# Copyright (C) 2026 Daniel Roesler
 # This file is distributed under the same license as the runcheap-ssg package.
-# Daniel Roesler <daniel@run.cheap>, 2025.
+# Daniel Roesler <daniel@run.cheap>
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: runcheap-ssg 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-05 12:11-0600\n"
+"POT-Creation-Date: 2026-01-27 21:16-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Daniel Roesler <daniel@run.cheap>\n"
 "Language: Dutch\n"
@@ -91,7 +91,7 @@ msgstr ""
 
 #: my_website/templates/landing.html:15
 msgid "Pages:"
-msgstr "Pagina's:"
+msgstr "Pagina&#39;s:"
 
 #: my_website/templates/landing.html:18
 msgid "Homepage"

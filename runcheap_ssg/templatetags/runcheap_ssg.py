@@ -15,10 +15,13 @@ def runcheap_ssg_language_url(cur_url, lang_code):
     Example:
         <a href="{{ request.path|runcheap_ssg_language_url:'de' }}">Read this article in German</a>
     """
-    view = resolve(cur_url)
+    url_split = cur_url.split("?", 1)
+    view = resolve(url_split[0])
     cur_lang = translation.get_language()
     translation.activate(lang_code)
-    alt_url = reverse(view.url_name, args=view.args, kwargs=view.kwargs)
+    alt_url = reverse(view.view_name, args=view.args, kwargs=view.kwargs)
+    if len(url_split) == 2:
+        alt_url += "?" + url_split[1]
     translation.activate(cur_lang)
     return alt_url
 
@@ -37,13 +40,14 @@ def runcheap_ssg_alt_languages(cur_url):
         {% endfor %}
     """
     alt_languages = []
-    view = resolve(cur_url)
+    stripped_url = cur_url.split("?", 1)[0]
+    view = resolve(stripped_url)
     cur_lang = translation.get_language()
-    cur_url = reverse(view.url_name, args=view.args, kwargs=view.kwargs)
+    cur_url = reverse(view.view_name, args=view.args, kwargs=view.kwargs)
     for lang_code, _ in settings.LANGUAGES:
         translation.activate(lang_code)
-        alt_url = reverse(view.url_name, args=view.args, kwargs=view.kwargs)
-        if alt_url != cur_url:
+        alt_url = reverse(view.view_name, args=view.args, kwargs=view.kwargs)
+        if alt_url != stripped_url:
             alt_languages.append(lang_code)
     translation.activate(cur_lang)
     return alt_languages

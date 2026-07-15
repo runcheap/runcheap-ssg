@@ -3,6 +3,8 @@ This is a minimal django settings.py file that only includes configs that are ne
 to generate the static site (e.g. no need for DATABASES, LOGIN_URL, etc.).
 """
 
+import os
+
 # you can add your own settings
 BASE_URL = "http://localhost:8000"  # used in canonical tags (which need absolute urls) in base.html
 
@@ -50,4 +52,7 @@ LANGUAGE_CODE = "en"
 LANGUAGES = [
     ("en", "English"),
     ("nl", "Dutch"),
+]
+LOCALE_PATHS = [
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "locale"),
 ]

@@ -4,7 +4,6 @@
     <head>
         <meta charset="utf-8">
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">{# disable favicon request #}
-        <meta http-equiv="refresh" content="0; url={{ redirect_url }}">
         <style>{{ redirect_style }}</style>
     </head>
     <body>
@@ -12,9 +11,10 @@
             {{ redirect_noscript }}
             <a href="{{ redirect_url }}">{{ redirect_url }}</a>
         </noscript>
+        <div id="redirectMessage"></div>
         <script>
-            document.write("{{ redirect_message|escapejs }}");
-            window.location.href = "{{ redirect_url|escapejs }}";
+            document.getElementById("redirectMessage").innerHTML = "{{ redirect_message|escapejs }}";
+            window.location.href = "{{ redirect_url|escapejs }}" + window.location.search + window.location.hash;
         </script>
     </body>
 </html>
